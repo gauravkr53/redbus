@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedBus - Payment</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🚌 RedBus</h1>
+            <div class="nav">
+                <a href="/search">Search Buses</a>
+                        <a href="/bookings/all-bookings">All Bookings</a>
+                <form method="post" action="/logout" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>Payment</h2>
+            
+            <div th:if="${param.error}" class="error">
+                Payment failed. Please try again.
+            </div>
+            
+            <!-- Booking Summary -->
+            <div class="booking-summary">
+                <h3>Booking Summary</h3>
+                <div class="summary-row">
+                    <span><strong>Booking ID:</strong></span>
+                    <span th:text="${booking.bookingId}">Booking ID</span>
+                </div>
+                <div class="summary-row">
+                    <span><strong>Trip ID:</strong></span>
+                    <span th:text="${booking.tripId}">Trip ID</span>
+                </div>
+                <div class="summary-row">
+                    <span><strong>Seats:</strong></span>
+                    <span th:text="${booking.seats}">Number of seats</span>
+                </div>
+                <div class="summary-row total">
+                    <span><strong>Total Amount:</strong></span>
+                    <span>₹<span th:text="${#numbers.formatDecimal(booking.pricePaise / 100, 1, 2)}">0.00</span></span>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <form method="post" action="/payment" class="payment-form">
+                <input type="hidden" name="bookingId" th:value="${booking.bookingId}">
+                <input type="hidden" name="amountPaise" th:value="${booking.pricePaise}">
+                <input type="hidden" name="paymentMethod" value="credit">
+                
+                <div class="payment-info">
+                    <div class="payment-method-info">
+                        <i>💳</i>
+                        <div>
+                            <strong>Credit Card Payment</strong>
+                            <small>Mock payment - no real transaction</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <a href="/search" class="btn btn-secondary" style="flex: 1; text-align: center; text-decoration: none;">Cancel</a>
+                    <button type="submit" class="btn btn-success" style="flex: 2;">Pay ₹<span th:text="${#numbers.formatDecimal(booking.pricePaise / 100, 1, 2)}">0.00</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/js/app.js}"></script>
+    <script>
+        // Handle payment form submission with loading state
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<span class="loading"></span> Processing Payment...';
+            submitBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>

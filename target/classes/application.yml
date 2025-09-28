@@ -1,0 +1,38 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: redbus-backend
+  profiles:
+    active: dev
+
+jwt:
+  secret: "mySecretKeyForRedBusBackendApplicationThatIsLongEnoughForHS256Algorithm"
+
+logging:
+  level:
+    com.redbus: INFO
+    org.springframework.security: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    root: INFO
+    com.redbus: DEBUG
